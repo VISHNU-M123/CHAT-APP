@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import { IoCloseOutline } from "react-icons/io5";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import uploadFile from '../helpers/uploadFile';
+import axios from 'axios';
+import toast from 'react-hot-toast'
 
 const RegisterPage = () => {
 
@@ -13,6 +15,7 @@ const RegisterPage = () => {
   })
 
   const [uploadPhoto, setUploadPhoto] = useState("")
+  const navigate = useNavigate()
 
   const handleOnChange = (e) => {
     const {name, value} = e.target
@@ -29,6 +32,12 @@ const RegisterPage = () => {
     const file = e.target.files[0]
     const uploadPhoto = await uploadFile(file)
     setUploadPhoto(file)
+    setData((prev) => {
+      return{
+        ...prev,
+        profile_pic: uploadPhoto?.url
+      }
+    })
   }
 
   const handleClearUploadPhoto = (e) => {
@@ -37,13 +46,32 @@ const RegisterPage = () => {
     setUploadPhoto(null)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     e.stopPropagation()
+
+    const URL = `${import.meta.env.VITE_BACKEND_URL}/api/register`
+
+    try {
+      const response = await axios.post(URL,data)
+      toast.success(response.data.message)
+
+      if(response.data.success){
+        setData({
+          name:'',
+          email:'',
+          password:'',
+          profile_pic:''
+        })
+        navigate('/email')
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message)
+    }
   }
   return (
     <div className='mt-5'>
-      <div className='bg-white w-full max-w-md mx-2 rounded overflow-hidden p-4 md:mx-auto'>
+      <div className='bg-white w-full max-w-md rounded overflow-hidden p-4 mx-auto'>
         <h3>Welcome to Chat App</h3>
 
         <form action="" className='grid gap-4 mt-5' onSubmit={handleSubmit}>
@@ -84,7 +112,7 @@ const RegisterPage = () => {
             <input type="file" id='profile_pic' name='profile_pic' className='bg-slate-100 px-2 py-1 focus:outline-[#00acb4] hidden' onChange={handleUploadPhoto} />
           </div>
 
-          <button className='bg-[#00acb4] text-lg px-4 py-1 hover:bg-[#058187] rounded mt-2 font-bold text-white leading-relaxed tracking-wide'>Register</button>
+          <button className='bg-[#00acb4] text-lg px-4 py-1 hover:bg-[#058187] rounded mt-2 font-bold text-white leading-relaxed tracking-wide cursor-pointer'>Register</button>
         </form>
 
         <p className='my-3 text-center'>Already have an account ? <Link to={'/email'} className='hover:text-[#00acb4] font-semibold'>Login</Link></p>
