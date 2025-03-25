@@ -40,7 +40,15 @@ const CheckPasswordPage = () => {
     const URL = `${import.meta.env.VITE_BACKEND_URL}/api/password`
 
     try {
-      const response = await axios.post(URL,data)
+      const response = await axios({
+        method:'post',
+        url:URL,
+        data:{
+          userId: location?.state?._id,
+          password: data.password
+        },
+        withCredentials:true
+      })
       toast.success(response.data.message)
 
       if(response.data.success){
