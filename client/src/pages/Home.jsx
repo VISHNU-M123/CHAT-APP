@@ -1,8 +1,15 @@
 import axios from 'axios'
 import React, { useEffect } from 'react'
-import { Outlet } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { Outlet, useNavigate } from 'react-router-dom'
+import { logout } from '../redux/userSlice'
 
 const Home = () => {
+
+  const user = useSelector(state => state.user)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  console.log('redux uesr',user)
 
   const fetchUserDetails = async () => {
     try {
@@ -11,6 +18,11 @@ const Home = () => {
         url:URL,
         withCredentials:true
       })
+
+      if(response.data.logout){
+        dispatch(logout())
+        navigate('/email')
+      }
 
       console.log('current user details', response)
     } catch (error) {

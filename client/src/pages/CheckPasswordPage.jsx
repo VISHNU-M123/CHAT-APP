@@ -6,6 +6,8 @@ import axios from 'axios';
 import toast from 'react-hot-toast'
 import { LuCircleUserRound } from "react-icons/lu";
 import Avatar from '../components/Avatar';
+import { useDispatch } from 'react-redux';
+import { setToken, setUser } from '../redux/userSlice';
 
 const CheckPasswordPage = () => {
 
@@ -15,6 +17,7 @@ const CheckPasswordPage = () => {
 
   const navigate = useNavigate()
   const location = useLocation()
+  const dispatch = useDispatch()
 
   useEffect(() => {
     if(!location?.state?.name){
@@ -52,6 +55,8 @@ const CheckPasswordPage = () => {
       toast.success(response.data.message)
 
       if(response.data.success){
+        dispatch(setToken(response?.data?.token))
+        localStorage.setItem('token', response?.data?.token)
         setData({
           password:'',
         })
