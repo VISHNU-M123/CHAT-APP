@@ -5,6 +5,7 @@ import { NavLink } from 'react-router-dom';
 import { BiLogOut } from "react-icons/bi";
 import Avatar from './Avatar';
 import { useSelector } from 'react-redux';
+import EditUserDetails from './EditUserDetails';
 
 const Sidebar = () => {
   const user = useSelector(state => state?.user)
@@ -22,13 +23,20 @@ const Sidebar = () => {
         </div>
         <div className='flex flex-col items-center'>
             <button className='mx-auto' title={user?.name} onClick={() => setEditUserOpen(true)}>
-                <Avatar width={40} height={40} name={user?.name}/>
+                <Avatar width={40} height={40} name={user?.name} imageUrl={user?.profile_pic}/>
             </button>
             <button className='w-12 h-12 flex justify-center items-center cursor-pointer hover:bg-slate-200 rounded' title='logout'>
                 <span className='-ml-2'><BiLogOut size={25}/></span>
             </button>
         </div>
       </div>
+
+      {/* edit user details */}
+      {
+        editUserOpen && (
+          <EditUserDetails onClose={() => setEditUserOpen(false)} user={user}/>
+        )
+      }
     </div>
   )
 }
