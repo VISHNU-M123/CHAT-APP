@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { logout, setUser } from '../redux/userSlice'
 import Sidebar from '../components/Sidebar'
+import logo from '../assets/logo.png'
 
 const Home = () => {
 
@@ -23,7 +24,7 @@ const Home = () => {
 
       dispatch(setUser(response.data.data))
 
-      if(response.data.logout){
+      if(response.data.data.logout){
         dispatch(logout())
         navigate('/email')
       }
@@ -41,13 +42,20 @@ const Home = () => {
   const basePath = location.pathname === '/'
   return (
     <div className='grid lg:grid-cols-[300px, 1fr] h-screen max-h-screen'>
-      <section className={`bg-white ${!basePath && 'hidden'}`}>
+      <section className={`bg-white ${!basePath && 'hidden'} lg:block`}>
         <Sidebar/>
       </section>
       {/* message component */}
       <section className={`${basePath && 'hidden'}`}>
         <Outlet/>
       </section>
+
+      <div className='lg:flex justify-center items-center flex-col gap-2 hidden'>
+        <div>
+          <img src={logo} width={250} alt="logo" />
+        </div>
+        <p className='text-lg mt-2 text-slate-500'>Select user to send message</p>
+      </div>
     </div>
   )
 }
