@@ -5,6 +5,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { logout, setUser } from '../redux/userSlice'
 import Sidebar from '../components/Sidebar'
 import logo from '../assets/logo.png'
+import io from 'socket.io-client'
 
 const Home = () => {
 
@@ -39,6 +40,19 @@ const Home = () => {
     fetchUserDetails()
   },[])
 
+  // socket connection
+  useEffect(() => {
+    const socketConnection = io(import.meta.env.VITE_BACKEND_URL, {
+      auth : {
+        token : localStorage.getItem('token')
+      }
+    })
+
+    return () => {
+      socketConnection.disconnect()
+    }
+  },[])
+
   const basePath = location.pathname === '/'
   return (
     <div className='grid lg:grid-cols-[300px, 1fr] h-screen max-h-screen'>
@@ -50,7 +64,7 @@ const Home = () => {
         <Outlet/>
       </section>
 
-      <div className='lg:flex justify-center items-center flex-col gap-2 hidden'>
+      <div className={`justify-center items-center flex-col gap-2 hidden ${!basePath ? 'hidden' : 'lg:flex' }`}>
         <div>
           <img src={logo} width={250} alt="logo" />
         </div>
