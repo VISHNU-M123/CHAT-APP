@@ -1,7 +1,10 @@
 import React from 'react'
 import { LuCircleUserRound } from 'react-icons/lu'
+import { useSelector } from 'react-redux'
 
 const Avatar = ({userId, name, imageUrl, width, height}) => {
+
+  const onlineUser = useSelector(state => state?.user?.onlineUser)
 
     let avatarName = ''
 
@@ -17,8 +20,10 @@ const Avatar = ({userId, name, imageUrl, width, height}) => {
 
     const bgColor = ['bg-slate-200', 'bg-teal-200', 'bg-red-200', 'bg-green-200', 'bg-yellow-200', 'bg-gray-200', 'bg-cyan-200', 'bg-sky-200', 'bg-blue-200']
     const randomNumber = Math.floor(Math.random() * 9)
+
+    const isOnline = onlineUser.includes(userId)
   return (
-    <div className={`text-slate-800 overflow-hidden rounded-full font-bold`} style={{width:width+"px", height:height+"px"}}>
+    <div className={`text-slate-800 rounded-full font-bold relative`} style={{width:width+"px", height:height+"px"}}>
       {
         imageUrl ? (
             <img src={imageUrl} width={width} height={height} alt={name} className='overflow-hidden rounded-full' />
@@ -28,6 +33,12 @@ const Avatar = ({userId, name, imageUrl, width, height}) => {
             ) : (
                 <LuCircleUserRound size={width}/>
             )
+        )
+      }
+
+      {
+        isOnline && (
+          <div className='bg-green-600 p-1 absolute bottom-2 -right-1 z-10 rounded-full'></div>
         )
       }
     </div>

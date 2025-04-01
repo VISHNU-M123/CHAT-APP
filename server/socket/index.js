@@ -2,6 +2,7 @@ const express = require('express')
 const {Server} = require('socket.io')
 const http = require('http')
 const getUserDetailsFromToken = require('../helpers/getUserDetailsFromToken')
+const userModel = require('../models/userModel')
 
 const app = express()
 
@@ -15,6 +16,7 @@ const io = new Server(server, {
 })
 
 // online user
+const onlineUser = new Set()
 
 io.on('connection', async (socket) => {
     console.log('connected user', socket.id)
@@ -26,9 +28,26 @@ io.on('connection', async (socket) => {
 
     // create a room
     socket.join(user?._id)
+    onlineUser.add(user?._id)
+
+    io.emit('onlineUser', Array.from(onlineUser))
+
+    socket.on('message-page', async (userId) => {
+        console.log('userId', userId)
+        const userDetails = await userModel.findById(userId).select('-password')
+
+        const payload = {
+            _id: userDetails?._id,
+            name: userDetails?.name,
+            email: userDetails?.email,
+            online: onlineUser.has(userId)
+        }
+        socket.emit('message-user', payload)
+    })
 
     // disconnect
-    io.on('disconnect', () => {
+    socket.on('disconnect', () => {
+        onlineUser.delete(user?._id)
         console.log('disconnected user', socket.id)
     })
 })
