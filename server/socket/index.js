@@ -45,6 +45,16 @@ io.on('connection', async (socket) => {
             online: onlineUser.has(userId)
         }
         socket.emit('message-user', payload)
+
+        // get previous message
+        const getConversationMessage = await ConversationModel.findOne({
+            '$or' : [
+                {sender : user?._id, receiver : userId},
+                {sender : userId, receiver : user?._id}
+            ]
+        }).populate('messages').sort({createdAt: -1})
+
+        socket.emit('message', getConversationMessage.messages)
     })
 
     // new message
