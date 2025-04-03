@@ -17,6 +17,11 @@ const messagesSchema = new mongoose.Schema({
         type:Boolean,
         default:false
     },
+    msgByUserId:{
+        type:mongoose.Schema.ObjectId,
+        required:true,
+        ref:'User'
+    },
     createdAt:{
         type:Date,
         default:Date.now
