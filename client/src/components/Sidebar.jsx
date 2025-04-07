@@ -130,7 +130,7 @@ const Sidebar = () => {
 
                   {
                     Boolean(conv?.unseenMsg) && (
-                      <p className='text-xs w-6 h-6 justify-center items-center ml-auto p-1 bg-[#00acb4] text-white font-semibold rounded-full'>{conv?.unseenMsg}</p>
+                      <p className='text-xs w-6 h-6 flex justify-center items-center ml-auto p-1 bg-[#00acb4] text-white font-semibold rounded-full'>{conv?.unseenMsg}</p>
                     )
                   }
                 </NavLink>
