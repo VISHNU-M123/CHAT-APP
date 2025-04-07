@@ -1,4 +1,4 @@
-import { ConversationModel } from "../models/conversationModel"
+const { ConversationModel } = require("../models/conversationModel");
 
 const getConversation = async (currentUserId) => {
     if(currentUserId){
@@ -19,7 +19,7 @@ const getConversation = async (currentUserId) => {
                     return prev
                 }
             }, 0)
-            
+
             return {
                 _id: conv?._id,
                 sender: conv?.sender,
